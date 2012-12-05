@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>
+      STATStat
+    </title>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {packages: ['table', 'columnchart']});
+    </script>
+    <script type="text/javascript">
+      var table;
+      var dataView;
+      var chart;
+      var options;
+      function drawVisualization() {
+      var dataTable = google.visualization.arrayToDataTable([
+          ['School', 'Critical Reading', 'Math', 'Writing'],
+          [ 'Stuyvesant High School', 674, 735, 678],
+          [ 'Staten Island Technical High School', 638, 673, 617],
+          [ 'Townsend Harris High School', 637, 644, 642],
+          [ 'High School of American Studies at Lehman College', 635, 630, 619],
+          [ 'Bronx High School of Science', 632, 685,  643],
+          [ 'Bard High School Early College', 630, 608, 630]
+        ]);
+        
+        table = new google.visualization.Table(document.getElementById('table'));
+        table.draw(dataTable, null);
+      
+        dataView = new google.visualization.DataView(dataTable);
+        dataView.setColumns([1, 2]);
+        //table = new google.visualization.Table(document.getElementById('table'));
+        //table.draw(dataView, null);
+      
+      	options = {
+          title: 'Critical Reading vs. Math Comparison',
+          hAxis: {title: 'Critical Reading', minValue: 200, maxValue: 800},
+          vAxis: {title: 'Math', minValue: 200, maxValue: 800},
+          legend: 'none'
+        };
+        
+        chart = new google.visualization.ScatterChart(document.getElementById('chart'));
+        chart.draw(dataView, options);
+      }
+      
+      function draw() {
+      chart.draw(dataView, options);
+    }
+
+      google.setOnLoadCallback(drawVisualization);
+      
+      function setCMR(value) {
+      if (value == 'Writing') {
+      	dataView.setColumns([3,1]);
+        options['title'] = value + " vs. Math Comparison";
+      }
+      else if (value == 'Critical Reading'){
+      	dataView.setColumns([1,2]);
+      	options['title'] = value + " vs. Math Comparison";
+      }
+      draw();
+    }
+      
+    </script>
+  </head>
+  <body style="font-family: Arial;border: 0 none;">
+  	<h1>SATStat</h1>
+  	<hr/>
+    <div id="chart" style="width: 500px; height: 300px;"></div>
+    <br />
+    <div style="margin-bottom: 10px; padding: 5px; border: 1px solid gray; background-color: buttonface;">
+<span> Configure the query</span>
+ <form action="">
+<table style="font-size: 12px; ">
+  <tr>
+    <td>Select</td>
+    <td><select id='query-1' onchange='setCMR(this.value)'>
+      <option value='Critical Reading'>Critical Reading</option>
+      <option value='Writing'>Writing</option>
+    </select></td>
+  </tr>
+</table>
+</form>
+</div>
+<br/>
+    <div>Top Critical Reading Schools</div>
+    <div id="table"></div>
+  </body>
+</html>
+​
