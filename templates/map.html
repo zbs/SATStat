@@ -13,16 +13,37 @@
     <script type="text/javascript">
       function initialize() {
         var mapOptions = {
-          center: new google.maps.LatLng(-34.397, 150.644),
-          zoom: 8,
+          center: new google.maps.LatLng({{ location_data["center"]["latitude"] }}, {{ location_data["center"]["longitude"] }}),
+          zoom: 12,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map(document.getElementById("map_canvas"),
             mapOptions);
+		
+		{% for location in location_data["locations"] %}
+		marker = new google.maps.Marker({
+			position: new google.maps.LatLng({{ location["latitude"] }}, {{ location["longitude"] }}),
+			map: map,
+			title: {{ location["name"] }}
+		});
+		{% end %}
       }
+	  
+	  
     </script>
   </head>
   <body onload="initialize()">
     <div id="map_canvas" style="width:100%; height:100%"></div>
   </body>
 </html>
+
+<!--
+Sample request body:
+{
+  "locations": [
+     {"latitude": 40.718542, "longitude": -74.014102, "name": "\"Stuyvesant\"" },
+{"latitude": 40.71433, "longitude": -74.010111, "name": "\"Random Point\""}
+
+]
+}
+-->

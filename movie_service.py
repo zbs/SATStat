@@ -47,7 +47,7 @@ class SchoolService(tornado.web.Application):
             (r"/", HomeHandler),
             (r"/Schools(\..+)?", SchoolListHandler),
             (r"/Schools/(\d+)(\..+)?", SchoolResourceHandler),
-            (r"/maps/(\d+)(\..+)?", MapHandler),
+            (r"/maps?", MapHandler),
             (r"/search(\..+)?", QueryHandler)
         ]
         settings = dict(
@@ -99,27 +99,19 @@ class SchoolListHandler(BaseHandler):
         self.set_header("Location", self.base_uri + "/Schools/" + new_School_id)
 
 class MapHandler(BaseHandler):
-    SUPPORTED_METHODS = ("PUT")
-
+    SUPPORTED_METHODS = ("POST")
+    
     def get(self, School_id, format):
-        School_resource = self.db.get_School(School_id, self.base_uri)
-        if format is None:
-            respond_to_header(self, "/Schools/%s"%School_id, True)
-        elif format == ".html":
-            self.set_header("Content-Type", "text/html")
-            self.render("School.html", School=School_resource)
-        elif format == ".xml":
-            self.set_header("Content-Type", "application/xml")
-            self.render("School.xml", School=School_resource)
-        elif format == ".rdf":
-            self.set_header("Content-Type", "application/rdf+xml")
-            self.render("School.rdf", School=School_resource)
-        elif format == ".ttl":
-            self.set_header("Content-Type", "text/turtle")
-            self.render("School.ttl", School=School_resource)
-        elif format == ".json":
-            self.write(School_resource) # Tornado handles JSON automatically
-
+        self.set_header("Content-Type", "text/html")
+        self.render("map.html")
+    
+    def post(self   ):
+        location_list = json.loads(self.request.body)["locations"]
+        center = {"latitude": sum([x["latitude"] for x in location_list])/ float(len(location_list)), 
+                  "longitude": sum([x["longitude"] for x in location_list])/ float(len(location_list))}
+        location_data = {"center": center, "locations": location_list}
+        self.set_header("Content-Type", "text/html")
+        self.render("map.html", location_data=location_data)
 
 class SchoolResourceHandler(BaseHandler):
     SUPPORTED_METHODS = ("PUT", "GET", "DELETE")
