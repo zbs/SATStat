@@ -10,58 +10,105 @@
       google.load('visualization', '1', {packages: ['table', 'columnchart']});
     </script>
     <script type="text/javascript">
-      var table;
-      var dataView;
+      var data;
+      var dataViewChart;
+      var dataViewTable;
+      var columnValueX;
+      var columnValueY;
+      var nameX;
+      var nameY;
+      var options_table = {'showRowNumber': true};
       var chart;
-      var options;
-      function drawVisualization() {
-      var dataTable = google.visualization.arrayToDataTable([
-          ['School', 'Critical Reading', 'Math', 'Writing'],
-          [ 'Stuyvesant High School', 674, 735, 678],
-          [ 'Staten Island Technical High School', 638, 673, 617],
-          [ 'Townsend Harris High School', 637, 644, 642],
-          [ 'High School of American Studies at Lehman College', 635, 630, 619],
-          [ 'Bronx High School of Science', 632, 685,  643],
-          [ 'Bard High School Early College', 630, 608, 630]
-        ]);
+      var options_chart = {'logScale': false};
+      var query = new google.visualization.Query('https://docs.google.com/spreadsheet/pub?key=0AqApqrIj0J-EdFRmV0RHQUFydk9mSzFMQ1hpNGE3aHc&output=html');
+      
+      function sendAndDraw() {
+      // Send the query with a callback function.
+      query.send(handleQueryResponse);
+    }
+    
+      function handleQueryResponse(response) {
+      if (response.isError()) {
+        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+        return;
+      }
+      data = response.getDataTable();
+      dataTable = new google.visualization.Table(document.getElementById('table'));
+      drawVisualization(data);
+      //dataTable.draw(data, {'showRowNumber': true});
+    }
+    
+      function drawVisualization(data) {
+        //selects portion of data table to display 
+        columnValueX = 28;
+        columnValueY = 13;
+        dataViewTable = new google.visualization.DataView(data);
+        dataViewTable.setColumns([1, columnValueX, columnValueY]);
+        dataViewChart = new google.visualization.DataView(data);
+        dataViewChart.setColumns([columnValueX, columnValueY]);
+      
+      	options_table['page'] = 'enable';
+      	options_table['pageSize'] = 10;
+      	options_table['pagingSymbols'] = {prev: 'prev', next: 'next'};
+      	options_table['pagingButtonsConfiguration'] = 'auto';
+      	
+      	nameX = "Total Full Time Teachers";
+      	nameY = "Critical Reading";
+      	options_chart['title'] = nameX + ' vs. ' + nameY + ' Comparison';
+      	options_chart['hAxis'] = {title: 'Age', minValue: 0, maxValue: 15};
+      	options_chart['vAxis'] = {title: 'Weight', minValue: 0, maxValue: 15};
+      	options_chart['legend'] = 'none';
+      	
         
         table = new google.visualization.Table(document.getElementById('table'));
-        table.draw(dataTable, null);
-      
-        dataView = new google.visualization.DataView(dataTable);
-        dataView.setColumns([1, 2]);
-        //table = new google.visualization.Table(document.getElementById('table'));
-        //table.draw(dataView, null);
-      
-      	options = {
-          title: 'Critical Reading vs. Math Comparison',
-          hAxis: {title: 'Critical Reading', minValue: 200, maxValue: 800},
-          vAxis: {title: 'Math', minValue: 200, maxValue: 800},
-          legend: 'none'
-        };
-        
         chart = new google.visualization.ScatterChart(document.getElementById('chart'));
-        chart.draw(dataView, options);
+        
+        draw();
       }
       
       function draw() {
-      chart.draw(dataView, options);
+      chart.draw(dataViewChart, options_chart);
+      table.draw(dataViewTable, options_table);
     }
 
-      google.setOnLoadCallback(drawVisualization);
+      google.setOnLoadCallback(sendAndDraw);
       
-      function setCMR(value) {
-      if (value == 'Writing') {
-      	dataView.setColumns([3,1]);
-        options['title'] = value + " vs. Math Comparison";
-      }
-      else if (value == 'Critical Reading'){
-      	dataView.setColumns([1,2]);
-      	options['title'] = value + " vs. Math Comparison";
-      }
-      draw();
+      
+      function setSATSection(value, name) {
+        if(value != 'select'){
+        columnValueY = parseInt(value);
+        nameY = name;
+      	dataViewChart.setColumns([columnValueX, columnValueY]);
+      	dataViewTable.setColumns([1, columnValueX, columnValueY]);
+        options_chart['title'] = nameX + " vs. " + nameY + " Comparison";
+        draw();
+        }
     }
       
+      function setAP(value, name) {
+        if(value != 'select'){
+        columnValueY = parseInt(value);
+        nameY = name;
+      	dataViewChart.setColumns([columnValueX, columnValueY]);
+      	dataViewTable.setColumns([1, columnValueX, columnValueY]);
+        options_chart['title'] = nameX + " vs. " + nameY + " Comparison";
+        draw();
+    	}
+    }
+      
+      function setMetric(value, name) {
+      if(value != 'select'){
+      columnValueX = parseInt(value);
+      nameX = name;
+      //document.write(columnValueX);
+      dataViewChart.setColumns([columnValueX, columnValueY]);
+      dataViewTable.setColumns([1, columnValueX, columnValueY]);
+      options_chart['title'] = nameX + " vs. " + nameY + " Comparison";
+      draw();
+      }
+    }
+    
+    
     </script>
   </head>
   <body style="font-family: Arial;border: 0 none;">
@@ -70,21 +117,47 @@
     <div id="chart" style="width: 500px; height: 300px;"></div>
     <br />
     <div style="margin-bottom: 10px; padding: 5px; border: 1px solid gray; background-color: buttonface;">
-<span> Configure the query</span>
+<span> Configure the Visualization</span>
  <form action="">
 <table style="font-size: 12px; ">
   <tr>
-    <td>Select</td>
-    <td><select id='query-1' onchange='setCMR(this.value)'>
-      <option value='Critical Reading'>Critical Reading</option>
-      <option value='Writing'>Writing</option>
+    <td>Select SAT Section:</td>
+    <td><select id='query-1' onchange='setSATSection(this.value, this.options[this.selectedIndex].innerHTML)'>
+      <option value='select'>--Select--</option>
+      <option value='13'>Critical Reading</option>
+      <option value='14'>Math</option>
+      <option value='15'>Writing</option>
+    </select></td>
+  </tr>
+  <tr>
+    <td>Compare AP scores:</td>
+    <td><select id='query-1' onchange='setAP(this.value, this.options[this.selectedIndex].innerHTML)'>
+      <option value='select'>--Select--</option>
+      <option value='17'>Total Exams Taken</option>
+      <option value='18'>Exams scoring 3+</option>
+    </select></td>
+  </tr>
+  <tr>
+    <td>Select Comparison Metric:</td>
+    <td><select id='query-1' onchange='setMetric(this.value, this.options[this.selectedIndex].innerHTML)'>
+      <option value='select'>--Select--</option>
+      <option value='19'>Total Students</option>
+      <option value='20'>Total Male Students</option>
+      <option value='21'>Total Female Students</option>
+      <option value='22'>Total American Indian Students</option>
+      <option value='23'>Total Asian Students</option>
+      <option value='24'>Total Black Students</option>
+      <option value='25'>Total Hispanic Students</option>
+      <option value='26'>Total White Students</option>
+      <option value='27'>Student Faculty Ratio</option>
+      <option value='28'>Total Full Time Teachers</option>
     </select></td>
   </tr>
 </table>
 </form>
 </div>
 <br/>
-    <div>Top Critical Reading Schools</div>
+    <div>School Data</div>
     <div id="table"></div>
   </body>
 </html>
