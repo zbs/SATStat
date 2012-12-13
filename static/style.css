@@ -106,6 +106,10 @@ td {
 	background-color: rgb(68, 68, 68);
 	border: none;
 }
+#selections{
+	text-align: center;
+	width:960px;
+}
 #map{
 	background-color: rgb(168,198,254);
 	width: 400px;
