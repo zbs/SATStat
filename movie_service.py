@@ -94,8 +94,21 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class RegionHandler(BaseHandler):
     def get(self, region_name, format):
+        if format is None:
+            respond_to_header(self, "/regions/%s"%region_name, True)
+            
+        region_name = region_name.replace("_", " ")
+        if format == ".html":
+            self.set_header("Content-Type", "text/html")
             self.render("region.html", result={"name":region_name})
-
+        else:
+            region_resource = self.db.get_region(region_name, self.base_uri)
+            if format == ".xml":
+                self.set_header("Content-Type", "application/xml")
+                self.render("region.xml", region=region_resource)
+            elif format == ".json":
+                self.write(region_resource) # Tornado handles JSON automatically
+            
 class BrowseHandler(BaseHandler):
     def get(self, format):
         self.render("regions.html")
@@ -159,7 +172,7 @@ class SchoolResourceHandler(BaseHandler):
     def get(self, School_id, format):
         school_resource = self.db.get_School(School_id, self.base_uri)
         if format is None:
-            respond_to_header(self, "/Schools/%s"%School_id, True)
+            respond_to_header(self, "/schools/%s"%School_id, True)
         elif format == ".html":
             self.set_header("Content-Type", "text/html")
             self.render("school.html", result=school_resource)
@@ -231,6 +244,9 @@ class SchoolDatabase(object):
             
         return results
 
+    def get_region(self, region_name, base_uri):
+        pass
+    
     # School CRUD operations
     def get_School(self, School_id, base_uri=None):
         query = gdata.spreadsheet.service.ListQuery()
