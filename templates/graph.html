@@ -43,6 +43,9 @@
         //selects portion of data table to display 
         columnValueX = 19;
         columnValueY = 14;
+        var formatTable = new google.visualization.PatternFormat('<a href="/schools/{1}">{0}</a>');
+        formatTable.format(data, [0, 1]);
+
         dataViewTable = new google.visualization.DataView(data);
         dataViewTable.setColumns([1, columnValueX, columnValueY]);
         dataViewChart = new google.visualization.DataView(data);
