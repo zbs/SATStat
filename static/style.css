@@ -155,12 +155,13 @@ td {
  }
 
 #about{
-	width:580px;
+	width:500px;
 	height:500px;
- 	text-align: left;
- 	top:250px;
- 	left:30%;
- 	min-width:900px;
+	background-color: rgb(255,255,255);
+ 	text-align: center;
+ 	margin-top: 25px;
+ 	padding-left: 200px;
+ 	margin-left: 20%;
  	margin-bottom:150px;
  	overflow: auto;
  	padding-right:250px;
