@@ -66,6 +66,7 @@ class SchoolService(tornado.web.Application):
             (r"/Schools(\..+)?", SchoolListHandler),
             (r"/Schools/(\d+)(\..+)?", SchoolResourceHandler),
             (r"/maps?", MapHandler),
+            (r"/about", AboutHandler),
             (r"/search(\..+)?", QueryHandler)
         ]
         
@@ -89,7 +90,10 @@ class BaseHandler(tornado.web.RequestHandler):
         """Attach human-readable msg to error messages"""
         self.finish("Error %d - %s" % (status_code, kwargs['message']))
     
-
+class AboutHandler(BaseHandler):
+    def get(self):
+        self.render("about.html")
+        
 class HomeHandler(BaseHandler):
     def get(self):
         self.render("graph.html")
