@@ -64,6 +64,7 @@ class SchoolService(tornado.web.Application):
             (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': static_path}),
             (r"/", HomeHandler),
             (r"/Schools(\..+)?", SchoolListHandler),
+            (r"/regions(\..+)?", BrowseHandler),
             (r"/Schools/(\d+)(\..+)?", SchoolResourceHandler),
             (r"/maps?", MapHandler),
             (r"/about", AboutHandler),
@@ -89,7 +90,11 @@ class BaseHandler(tornado.web.RequestHandler):
     def write_error(self, status_code, **kwargs):
         """Attach human-readable msg to error messages"""
         self.finish("Error %d - %s" % (status_code, kwargs['message']))
-    
+
+class BrowseHandler(BaseHandler):
+    def get(self, region_name):
+        self.render("regions.html")
+        
 class AboutHandler(BaseHandler):
     def get(self):
         self.render("about.html")
@@ -104,6 +109,9 @@ class SchoolListHandler(BaseHandler):
         Schools = self.db.list_Schools(self.base_uri)
         if format is None:
             respond_to_header(self, "/Schools")
+        elif format == ".html":
+            self.set_header("Content-Type", "text/html")
+            self.render("schools.html", result=school_resource)
         elif format == ".xml":
             self.set_header("Content-Type", "application/xml")
             self.render("Schools.xml", results=Schools)
