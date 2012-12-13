@@ -157,7 +157,8 @@
    <p><div id='address'></div>
      <span id='city'></span>, <span id='state'></span> <span id='zipCode'></span></p>
 
-     <div id="map"></div>
+     <div id="map"><img src="http://maps.googleapis.com/maps/api/staticmap?center={{ result["latitude"] }},{{ result["longitude"] }}&zoom=13&size=600x300&maptype=roadmap
+&markers=color:blue%7Clabel:S%7C{{ result["latitude"] }},{{ result["longitude"] }}&sensor=false"/></div>
    </div>
    <div id="attribute">
    <h3>SAT Statistics</h3>
