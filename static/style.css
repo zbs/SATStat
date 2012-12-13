@@ -8,6 +8,7 @@ p{
 	color: rgb(68, 68, 68);
 	margin-left: 16px;
 	margin-right: 16px;
+	font-size:18px;
 }
 h1{
 	color: rgb(68, 68, 68);
@@ -23,6 +24,10 @@ h2{
 	color: rgb(68, 68, 68);
 	font-family: "calibri", serif, Times;
 	clear: both;
+	
+}
+h3{
+	font-size:22px;
 }
 img{
 	width=70%;
@@ -38,8 +43,49 @@ td {
 	padding: 30px;
 }
 
-
-
+#schoolInfo{
+	text-align: center;
+	display: block;
+	overflow:hidden;
+}
+#attribute{
+	background-color: rgb(255, 255, 255);
+	width: 200px;
+	padding-top: 15px;
+	padding-bottom: 10px;
+	text-align: left;
+	float:left;
+	padding-left: 45px;
+	margin-left: 15px;
+	height:750px;
+	min-width: 400px;
+}
+#demographic{
+	background-color: rgb(255, 255, 255);
+	width: 300px;
+	padding-top: 15px;
+	padding-bottom: 10px;
+	padding-left: 85px;
+	margin-left: 15px;
+	text-align: left;
+	float:left;
+	overflow: hidden;
+	height:750px;
+	min-width: 400px;
+}
+#general{
+	background-color: rgb(168,198,254);
+	width: 400px;
+	padding-top: 15px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: center;
+	color: rgb(68,68,68);
+	float:left;
+	height:750px;
+	display: inline-block;
+}
 #banner{
 	
 	z-index: -1;
@@ -54,7 +100,12 @@ td {
 	background-color: rgb(68, 68, 68);
 	border: none;
 }
-
+#map{
+	background-color: rgb(168,198,254);
+	width: 400px;
+	
+	float:left;
+}
 #header{
 	background-color: rgb(255,255,255);
 	margin-top: -25px;
@@ -111,6 +162,7 @@ td {
 
 #visualizations{
 	padding-left: 50px;
+	min-width: 960px;
 }
 
 #filter{
@@ -156,6 +208,9 @@ label{
  	padding-top: 50px;
  	padding-bottom: 10px;
 
+}
+.whiteP{
+	color:rgb(68,68,68);
 }
 .classname {
 	-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
