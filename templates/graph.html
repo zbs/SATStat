@@ -2,8 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>
-      STATStat
+      STATStat NYC
     </title>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -40,8 +41,8 @@
     
       function drawVisualization(data) {
         //selects portion of data table to display 
-        columnValueX = 28;
-        columnValueY = 13;
+        columnValueX = 35;
+        columnValueY = 14;
         dataViewTable = new google.visualization.DataView(data);
         dataViewTable.setColumns([1, columnValueX, columnValueY]);
         dataViewChart = new google.visualization.DataView(data);
@@ -51,9 +52,11 @@
       	options_table['pageSize'] = 10;
       	options_table['pagingSymbols'] = {prev: 'prev', next: 'next'};
       	options_table['pagingButtonsConfiguration'] = 'auto';
+      	options_table['sortColumn'] = 1;
+      	options_table['sortAscending'] = false;
       	
       	nameX = "Total Full Time Teachers";
-      	nameY = "Critical Reading";
+      	nameY = "Mathematics Mean";
       	options_chart['title'] = nameX + ' vs. ' + nameY + ' Comparison';
       	options_chart['hAxis'] = {title: 'Age', minValue: 0, maxValue: 15};
       	options_chart['vAxis'] = {title: 'Weight', minValue: 0, maxValue: 15};
@@ -112,53 +115,63 @@
     </script>
   </head>
   <body style="font-family: Arial;border: 0 none;">
-  	<h1>SATStat</h1>
-  	<hr/>
-    <div id="chart" style="width: 500px; height: 300px;"></div>
-    <br />
-    <div style="margin-bottom: 10px; padding: 5px; border: 1px solid gray; background-color: buttonface;">
-<span> Configure the Visualization</span>
+  	
+	<div id="header">
+		<h1>SATStat NYC </h1>
+		<div id="headerbackground"></div>
+	</div>
+	<div id="visualizations">
+	<div id="menu">	
+			<a href='about.html' class="classname"> About </a>
+			<a href='graph.html' class="classname"> Charts</a>
+			<a href='schools.html' class="classname"> Schools</a>
+		</div>
+	
+   <h2>Chart Visualization</h2> 
+<div id="filter" ">
+<span id="configure"> Configure</span>
  <form action="">
-<table style="font-size: 12px; ">
-  <tr>
-    <td>Select SAT Section:</td>
-    <td><select id='query-1' onchange='setSATSection(this.value, this.options[this.selectedIndex].innerHTML)'>
+    <p><label>Select SAT Section:</label>
+    <select id='query-1' onchange='setSATSection(this.value, this.options[this.selectedIndex].innerHTML)'>
       <option value='select'>--Select--</option>
       <option value='13'>Critical Reading</option>
       <option value='14'>Math</option>
       <option value='15'>Writing</option>
-    </select></td>
-  </tr>
-  <tr>
-    <td>Compare AP scores:</td>
-    <td><select id='query-1' onchange='setAP(this.value, this.options[this.selectedIndex].innerHTML)'>
-      <option value='select'>--Select--</option>
-      <option value='17'>Total Exams Taken</option>
-      <option value='18'>Exams scoring 3+</option>
-    </select></td>
-  </tr>
-  <tr>
-    <td>Select Comparison Metric:</td>
-    <td><select id='query-1' onchange='setMetric(this.value, this.options[this.selectedIndex].innerHTML)'>
+    </select></p>
+  
+    
+    <p><label>Select Comparison Metric:</label>
+    <select id='query-1' onchange='setMetric(this.value, this.options[this.selectedIndex].innerHTML)'>
       <option value='select'>--Select--</option>
       <option value='19'>Total Students</option>
       <option value='20'>Total Male Students</option>
-      <option value='21'>Total Female Students</option>
-      <option value='22'>Total American Indian Students</option>
-      <option value='23'>Total Asian Students</option>
-      <option value='24'>Total Black Students</option>
-      <option value='25'>Total Hispanic Students</option>
-      <option value='26'>Total White Students</option>
-      <option value='27'>Student Faculty Ratio</option>
-      <option value='28'>Total Full Time Teachers</option>
-    </select></td>
-  </tr>
-</table>
+      <option value='21'>% Male Students</option>
+      <option value='22'>Total Female Students</option>
+      <option value='23'>% Female Students</option>
+      <option value='24'>Total American Indian Students</option>
+      <option value='25'>% American Indian Students</option>
+      <option value='26'>Total Asian Students</option>
+      <option value='27'>% Asian Students</option>
+      <option value='28'>Total Black Students</option>
+      <option value='29'>% Black Students</option>
+      <option value='30'>Total Hispanic Students</option>
+      <option value='31'>% Hispanic Students</option>
+      <option value='32'>Total White Students</option>
+      <option value='33'>% White Students</option>
+      <option value='34'>Student Faculty Ratio</option>
+      <option value='35'>Total Full Time Teachers</option>
+    </select></p>
+    
+    <p><a href="#table">View Data as Table</a></p>
+
 </form>
 </div>
+<div id="chart"></div>
+    <br />
 <br/>
-    <div>School Data</div>
+    <h2>School Data</h2>
     <div id="table"></div>
+</div>
   </body>
 </html>
 ​

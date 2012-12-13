@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>
+      STATStat NYC
+    </title>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+     google.load('visualization', '1', {packages: ['table', 'columnchart']});
+    </script>
+    <script type="text/javascript">
+    var query = new google.visualization.Query('https://docs.google.com/spreadsheet/pub?key=0AqApqrIj0J-EdFRmV0RHQUFydk9mSzFMQ1hpNGE3aHc&output=html');
+    
+	query.setQuery("select B where F='BAYSIDE'");
+	query.send(handleQueryResponse);
+	
+	function handleQueryResponse(response) {
+      if (response.isError()) {
+        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+        return;
+      }
+      data = response.getDataTable();
+      var table = new google.visualization.Table(document.getElementById('querytable'));
+      table.draw(data, null);
+    }
+    
+      google.setOnLoadCallback(sendAndDraw);
+	</script>
+  </head>
+  <body style="font-family: Arial;border: 0 none;">
+  	<div id="header">
+		<h1>SATStat NYC </h1>
+		<div id="headerbackground"></div>
+	</div>
+	<div id="visualizations">
+	<div id="menu">	
+			<a href='about.html' class="classname"> About </a>
+			<a href='graph.html' class="classname"> Charts</a>
+			<a href='schools.html' class="classname"> Schools</a>
+		</div>
+	<h2>School Data</h2>
+    <div id="querytable"></div>

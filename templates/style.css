@@ -1,6 +1,5 @@
 body{
 	background-color: rgb(245,240,255);
-	overflow: hidden;
 	margin:0;
 
 }
@@ -11,16 +10,19 @@ p{
 	margin-right: 16px;
 }
 h1{
-	margin-left: 16px;
-	margin-right: 16px;
 	color: rgb(68, 68, 68);
 	font-family: "calibri", serif, Times;
+	padding-bottom: 0px;
+	margin-bottom: -20px;
+	margin-left: 65px;
+	font-size: 250%;
 }
 h2{
 	margin-left: 16px;
 	margin-right: 16px;
 	color: rgb(68, 68, 68);
 	font-family: "calibri", serif, Times;
+	clear: both;
 }
 img{
 	width=70%;
@@ -28,11 +30,19 @@ img{
 
 }
 
+a {
+	color: #FFFFFF;
+}
+
+td {
+	padding: 30px;
+}
+
+
 
 #banner{
 	
 	z-index: -1;
-	position: absolute;
 	left:0;
 	width:100%;
 	height:100px;
@@ -44,20 +54,28 @@ img{
 	background-color: rgb(68, 68, 68);
 	border: none;
 }
-#mirror{
-	background-image: url("mirror.png");
+
+#header{
 	background-color: rgb(255,255,255);
+	margin-top: -25px;
+}
+
+#headerbackground{
+	background-image: url("mirror.png");
 	background-repeat: repeat-x;
-	position: absolute;
-	z-index: 1;
-	left:0;
-	width:100%;
-	margin-top: 80px;
+	height: 80px;
+}
+#mirror{
+	
 	min-height: 85px;
 	border: none;
+	margin:0 auto;
+	padding-left: 65px;
+	font-size: 250%;
+	color: rgb(68, 68, 68);
+	font-family: "calibri", serif, Times;
 }
 #title{
-	margin-top: 20px;
 	min-width:900px;
 	margin-left:100px;
 	color: rgb(255, 255, 255);
@@ -70,10 +88,11 @@ img{
  	padding-bottom: 10px;
 }
  #menu{
- 	position: absolute;
  	top: 180px;
  	width:100%;
  	height:50px;
+ 	
+ 	margin-top: 10px;
  	
 
  }
@@ -81,7 +100,6 @@ img{
 #about{
 	width:580px;
 	height:500px;
-	position: absolute;
  	text-align: left;
  	top:250px;
  	left:30%;
@@ -89,6 +107,44 @@ img{
  	margin-bottom:150px;
  	overflow: auto;
  	padding-right:250px;
+}
+
+#visualizations{
+	padding-left: 50px;
+}
+
+#filter{
+	float: left;
+	width: 450px;
+	height: 290px;
+	background-color: rgb(76, 137, 233);
+	color: #FFFFFF;
+	margin-bottom: 50px;
+	margin-left: 15px;
+	padding-top: 10px;
+}
+
+#configure{
+	padding-left: 15px;
+	font-size: 120%;
+}
+
+#chart{
+	width: 700px;
+	height: 300px;
+	float: left;
+}
+
+#table{
+	margin-left: 15px;
+	padding-right: 65px;
+}
+
+label{
+	display: inline-block;
+	width: 200px;
+	color: #FFFFFF;
+	line-height: 70px;
 }
 
 #bottom{
