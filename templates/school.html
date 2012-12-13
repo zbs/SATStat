@@ -46,7 +46,7 @@
     var studentFaculty;
     var totalTeachers;
     
-	query.setQuery("select B, C, D, E, F, G, H, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ where B='Bayside High School'");
+	query.setQuery("select B, C, D, E, F, G, H, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ where B='{{ result['name'] }}'");
 	query.send(handleQueryResponse);
 	
 	function handleQueryResponse(response) {

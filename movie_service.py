@@ -9,6 +9,7 @@ import codecs
 import json
 import re
 import urlparse
+import urllib
 
 import tornado.httpserver
 import tornado.ioloop
@@ -52,18 +53,22 @@ def respond_to_header(handler, redirect_uri, support_html=False):
 class SchoolService(tornado.web.Application):
     """The School Service Web Application"""
     def __init__(self, db):
+        static_path = os.path.join(os.getcwd(), 'static')
+        settings = dict(
+            template_path=os.path.join(os.path.dirname(__file__), "templates"),
+            debug=True,
+            autoescape=None,
+            static_path= static_path
+        )
         handlers = [
+            (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': static_path}),
             (r"/", HomeHandler),
             (r"/Schools(\..+)?", SchoolListHandler),
             (r"/Schools/(\d+)(\..+)?", SchoolResourceHandler),
             (r"/maps?", MapHandler),
             (r"/search(\..+)?", QueryHandler)
         ]
-        settings = dict(
-            template_path=os.path.join(os.path.dirname(__file__), "templates"),
-            debug=True,
-            autoescape=None,
-        )
+        
         tornado.web.Application.__init__(self, handlers, **settings)
         self.db = db
         
@@ -115,13 +120,17 @@ class MapHandler(BaseHandler):
         self.render("map.html")
     
     def post(self   ):
-        location_list = json.loads(self.request.body)["locations"]
+        print str(urllib.unquote(self.request.body))
+        print str(self.request.body)
+        
+        location_list = json.loads(urllib.unquote(self.request.body))["locations"]
         center = {"latitude": sum([x["latitude"] for x in location_list])/ float(len(location_list)), 
                   "longitude": sum([x["longitude"] for x in location_list])/ float(len(location_list))}
         location_data = {"center": center, "locations": location_list}
         self.set_header("Content-Type", "text/html")
+        print "BEFORE"
         self.render("map.html", location_data=location_data)
-
+        print "COMPLETED"
 class SchoolResourceHandler(BaseHandler):
     SUPPORTED_METHODS = ("PUT", "GET", "DELETE")
 
@@ -130,10 +139,8 @@ class SchoolResourceHandler(BaseHandler):
         if format is None:
             respond_to_header(self, "/Schools/%s"%School_id, True)
         elif format == ".html":
-#            not implemented yet
-#            self.set_header("Content-Type", "text/html")
-#            self.render("School.html", School=school_resource)
-            pass
+            self.set_header("Content-Type", "text/html")
+            self.render("school.html", School=school_resource)
         elif format == ".xml":
             self.set_header("Content-Type", "application/xml")
             self.render("school.xml", school=school_resource)
