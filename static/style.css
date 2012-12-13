@@ -110,6 +110,11 @@ td {
 	text-align: center;
 	width:960px;
 }
+#querytable{
+	text-align: center;
+	width:700px;
+	margin-left: 25%;
+}
 #map{
 	background-color: rgb(168,198,254);
 	width: 400px;
