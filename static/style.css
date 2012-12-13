@@ -47,10 +47,16 @@ td {
 	text-align: center;
 	display: block;
 	overflow:hidden;
+	padding-top: 15px;
+	padding-bottom: 10px;
+	text-align: left;
+	float:left;
+	padding-left: 10px;
+	margin-left: 15px;
 }
 #attribute{
 	background-color: rgb(255, 255, 255);
-	width: 200px;
+	width: 350px;
 	padding-top: 15px;
 	padding-bottom: 10px;
 	text-align: left;
@@ -58,29 +64,29 @@ td {
 	padding-left: 45px;
 	margin-left: 15px;
 	height:750px;
-	min-width: 400px;
+	
 }
 #demographic{
 	background-color: rgb(255, 255, 255);
-	width: 300px;
+	width: 400px;
 	padding-top: 15px;
 	padding-bottom: 10px;
-	padding-left: 85px;
+	padding-left: 45px;
 	margin-left: 15px;
 	text-align: left;
 	float:left;
 	overflow: hidden;
 	height:750px;
-	min-width: 400px;
+	
 }
 #general{
 	background-color: rgb(168,198,254);
 	width: 400px;
 	padding-top: 15px;
 	padding-bottom: 10px;
-	padding-left: 10px;
+	padding-left: 45px;
 	padding-right: 10px;
-	text-align: center;
+	text-align: left;
 	color: rgb(68,68,68);
 	float:left;
 	height:750px;
