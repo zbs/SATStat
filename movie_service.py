@@ -132,7 +132,7 @@ class MapHandler(BaseHandler):
         self.render("map.html", location_data=location_data)
         print "COMPLETED"
 class SchoolResourceHandler(BaseHandler):
-    SUPPORTED_METHODS = ("PUT", "GET", "DELETE")
+    SUPPORTED_METHODS = ("GET")
 
     def get(self, School_id, format):
         school_resource = self.db.get_School(School_id, self.base_uri)
@@ -140,23 +140,12 @@ class SchoolResourceHandler(BaseHandler):
             respond_to_header(self, "/Schools/%s"%School_id, True)
         elif format == ".html":
             self.set_header("Content-Type", "text/html")
-            self.render("school.html", School=school_resource)
+            self.render("school.html", result=school_resource)
         elif format == ".xml":
             self.set_header("Content-Type", "application/xml")
             self.render("school.xml", school=school_resource)
         elif format == ".json":
             self.write(school_resource) # Tornado handles JSON automatically
-
-    def put(self, School_id, format):
-        if School_id in self.db.Schools:
-            print "Updating School %s" % School_id
-            new_School = json.loads(self.request.body)
-            self.db.update_School(School_id, new_School[1])
-    
-    def delete(self, School_id, format):
-        if School_id in self.db.Schools:
-            print "Deleting School %s" % School_id
-            self.db.delete_School(School_id)
 
 class QueryHandler(BaseHandler):
     
