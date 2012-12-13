@@ -8,7 +8,7 @@ p{
 	color: rgb(68, 68, 68);
 	margin-left: 16px;
 	margin-right: 16px;
-	font-size:18px;
+	font-size:15px;
 }
 h1{
 	color: rgb(68, 68, 68);
@@ -56,7 +56,7 @@ td {
 }
 #attribute{
 	background-color: rgb(255, 255, 255);
-	width: 350px;
+	width: 300px;
 	padding-top: 15px;
 	padding-bottom: 10px;
 	text-align: left;
@@ -68,7 +68,7 @@ td {
 }
 #demographic{
 	background-color: rgb(255, 255, 255);
-	width: 400px;
+	width: 350px;
 	padding-top: 15px;
 	padding-bottom: 10px;
 	padding-left: 45px;
