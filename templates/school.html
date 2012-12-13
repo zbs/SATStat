@@ -1,192 +1,199 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
-    <title>
-      STATStat NYC
-    </title>
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-     google.load('visualization', '1', {packages: ['table', 'columnchart']});
-    </script>
-    <script type="text/javascript">
-    var query = new google.visualization.Query('https://docs.google.com/spreadsheet/pub?key=0AqApqrIj0J-EdFRmV0RHQUFydk9mSzFMQ1hpNGE3aHc&output=html');
-	var schoolName;
-    var nces;
-    var schoolType;
-    var address;
-    var city;
-    var state;
-    var zipCode;
-    var charterSchool;
-    var magnetSchool;
-    var numTestTakers;
-    var criticalReadingMean;
-    var mathematicsMean;
-    var wrtitingMean;
-    var apTestTakers;
-    var totalApExams;
-    var numAp3Higher;
-    var totalStudents;
-    var totalMale;
-    var percentMale;
-    var totalFemale;
-    var percentFemale;
-    var totalAmericanIndian;
-    var percentAmericanIndian;
-    var totalAsians;
-    var percentAsians;
-    var totalBlack;
-    var percentBlack;
-    var totalHispanic;
-    var percentHispanic;
-    var totalWhite;
-    var percentWhite;
-    var studentFaculty;
-    var totalTeachers;
-    
-	query.setQuery("select B, C, D, E, F, G, H, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ where B='{{ result["schoolname"] }}'");
-	query.send(handleQueryResponse);
-	
-	function handleQueryResponse(response) {
-      if (response.isError()) {
-        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-        return;
-      }
-      data = response.getDataTable();
-      
-      schoolName = data.getValue(0,0);
-      document.getElementById('schoolName').innerHTML = schoolName;
-      
-      nces = data.getValue(0,1);
-      document.getElementById('nces').innerHTML = nces;
-      schoolType = data.getValue(0,2);
-      document.getElementById('schoolType').innerHTML = schoolType;
-      address = data.getValue(0,3);
-      document.getElementById('address').innerHTML = address;
-      city = data.getValue(0,4);
-      document.getElementById('city').innerHTML = city;
-      state = data.getValue(0,5);
-      document.getElementById('state').innerHTML = state;
-      
-      zipCode = data.getValue(0,6);
-      document.getElementById('zipCode').innerHTML = zipCode;
-      charterSchool = data.getValue(0,7);
-      document.getElementById('charterSchool').innerHTML = charterSchool;
-      magnetSchool = data.getValue(0,8);
-      document.getElementById('magnetSchool').innerHTML = magnetSchool;
-      numTestTakers = data.getValue(0,9);
-      document.getElementById('numTestTakers').innerHTML = numTestTakers;
-      criticalReadingMean = data.getValue(0,10);
-      document.getElementById('criticalReadingMean').innerHTML = criticalReadingMean;
-      mathematicsMean = data.getValue(0,11);
-      document.getElementById('mathematicsMean').innerHTML = mathematicsMean;
-      writingMean = data.getValue(0,12);
-      document.getElementById('writingMean').innerHTML = writingMean;
-      apTestTakers = data.getValue(0,13);
-      document.getElementById('apTestTakers').innerHTML = apTestTakers;
-      totalApExams = data.getValue(0,14);
-      document.getElementById('totalApExams').innerHTML = totalApExams;
-      numAp3Higher = data.getValue(0,15);
-      document.getElementById('numAp3Higher').innerHTML = numAp3Higher;
-      totalStudents = data.getValue(0,16);
-      document.getElementById('totalStudents').innerHTML = totalStudents;
-      totalMale = data.getValue(0,17);
-      document.getElementById('totalMale').innerHTML = totalMale;
-      percentMale = data.getValue(0,18);
-      document.getElementById('percentMale').innerHTML = percentMale;
-      totalFemale = data.getValue(0,19);
-      document.getElementById('totalFemale').innerHTML = totalFemale;
-      percentFemale = data.getValue(0,20);
-      document.getElementById('percentFemale').innerHTML = percentFemale;
-      totalAmericanIndian = data.getValue(0,21);
-      document.getElementById('totalAmericanIndian').innerHTML = totalAmericanIndian;
-      percentAmericanIndian = data.getValue(0,22);
-      document.getElementById('percentAmericanIndian').innerHTML = percentAmericanIndian;
-      totalAsians = data.getValue(0,23);
-      document.getElementById('totalAsians').innerHTML = totalAsians;
-      percentAsians = data.getValue(0,24);
-      document.getElementById('percentAsians').innerHTML = percentAsians;
-      totalBlack = data.getValue(0,25);
-      document.getElementById('totalBlack').innerHTML = totalBlack;
-      percentBlack = data.getValue(0,26);
-      document.getElementById('percentBlack').innerHTML = percentBlack;
-      totalHispanic = data.getValue(0,27);
-      document.getElementById('totalHispanic').innerHTML = totalHispanic;
-      percentHispanic = data.getValue(0,28);
-      document.getElementById('percentHispanic').innerHTML = percentHispanic;
-      totalWhite = data.getValue(0,29);
-      document.getElementById('totalWhite').innerHTML = totalWhite;
-      percentWhite = data.getValue(0,30);
-      document.getElementById('percentWhite').innerHTML = percentWhite;
-      studentFaculty = data.getValue(0,31);
-      document.getElementById('studentFaculty').innerHTML = studentFaculty;
-      totalTeachers = data.getValue(0,32);
-      document.getElementById('totalTeachers').innerHTML = totalTeachers;
-      
-      var table = new google.visualization.Table(document.getElementById('querytable'));
-      table.draw(data, null);
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="/static/style.css">
+  <title>
+    STATStat NYC
+  </title>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbey5D52yTuHcqPRM-pJ91n5dPsoVqv3U&sensor=false">
+</script>
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+  google.load('visualization', '1', {packages: ['table', 'columnchart']});
+  </script>
+  <script type="text/javascript">
+  var query = new google.visualization.Query('https://docs.google.com/spreadsheet/pub?key=0AqApqrIj0J-EdFRmV0RHQUFydk9mSzFMQ1hpNGE3aHc&output=html');
+  var schoolName;
+  var nces;
+  var schoolType;
+  var address;
+  var city;
+  var state;
+  var zipCode;
+  var charterSchool;
+  var magnetSchool;
+  var numTestTakers;
+  var criticalReadingMean;
+  var mathematicsMean;
+  var wrtitingMean;
+  var apTestTakers;
+  var totalApExams;
+  var numAp3Higher;
+  var totalStudents;
+  var totalMale;
+  var percentMale;
+  var totalFemale;
+  var percentFemale;
+  var totalAmericanIndian;
+  var percentAmericanIndian;
+  var totalAsians;
+  var percentAsians;
+  var totalBlack;
+  var percentBlack;
+  var totalHispanic;
+  var percentHispanic;
+  var totalWhite;
+  var percentWhite;
+  var studentFaculty;
+  var totalTeachers;
+
+  query.setQuery("select B, C, D, E, F, G, H, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF, AG, AH, AI, AJ where B='{{ result["schoolname"] }}'");
+  query.send(handleQueryResponse);
+
+  function handleQueryResponse(response) {
+    if (response.isError()) {
+      alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+      return;
     }
-    
-	</script>
-  </head>
-  <body style="font-family: Arial;border: 0 none;">
-  	<div id="header">
-		<h1>SATStat NYC </h1>
-		<div id="headerbackground"></div>
-	</div>
-	<div id="visualizations">
-	<div id="menu">	
-			<a href='about.html' class="classname"> About </a>
-			<a href='graph.html' class="classname"> Charts</a>
-			<a href='schools.html' class="classname"> Schools</a>
-		</div>
-		
-	<h2 id="schoolName"></h2>
-	
-	<h3>General Info</h3>
-	<p>NCES ID: <span id='nces'></span></p>
-	<p>School Type: <span id='schoolType'></span></p>
-	<p>Charter School: <span id='charterSchool'></span></p>
-	<p>Magnet School: <span id='magnetSchool'></span></p>
-	
-	<h3>Address</h3>
-	<p><div id='address'></div>
-	<span id='city'></span>, <span id='state'></span> <span id='zipCode'></span></p>
-	
-	<div id="map"></div>
-	<h3>SAT Statistics</h3>
-	<p>Number of Test Takers: <span id='numTestTakers'></span></p>
-	<p>Math Mean: <span id='mathematicsMean'></span></p>
-	<p>Critical Reading Mean: <span id='criticalReadingMean'></span></p>
-	<p>Writing Mean: <span id='writingMean'></span></p>
-	
-	<h3>AP Statistics</h3>
-	<p>Total Number of Test Takers: <span id='apTestTakers'></span></p>
-	<p>Total AP Exams Taken: <span id='totalApExams'></span></p>
-	<p>Number of Exams 3 or Higher: <span id='numAp3Higher'></span></p>
-	
-	<h3>Demographic Information</h3>
-	<p>Total Students: <span id='totalStudents'></span></p>
-	<p>Total Male Students: <span id='totalMale'></span></p>
-	<p>Percent Male Students: <span id='percentMale'></span></p>
-	<p>Total Female Students: <span id='totalFemale'></span></p>
-	<p>Percent Female Students: <span id='percentFemale'></span></p>
-	<p>Total American Indian Students: <span id='totalAmericanIndian'></span></p>
-	<p>Percent American Indian Students: <span id='percentAmericanIndian'></span></p>
-	<p>Total Asian Students: <span id='totalAsians'></span></p>
-	<p>Percent Asian Students: <span id='percentAsians'></span></p>
-	<p>Total Black Students: <span id='totalBlack'></span></p>
-	<p>Percent Black Students: <span id='percentBlack'></span></p>
-	<p>Total Hispanic Students: <span id='totalHispanic'></span></p>
-	<p>Percent Hispanic Students: <span id='percentHispanic'></span></p>
-	<p>Total White Students: <span id='totalWhite'></span></p>
-	<p>Percent White Students: <span id='percentWhite'></span></p>
-	<p>Student Faculty Ratio: <span id='studentFaculty'></span></p>
-	<p>Total Full Time Teachers: <span id='totalTeachers'></span></p>
-	
+    data = response.getDataTable();
+
+    schoolName = data.getValue(0,0);
+    document.getElementById('schoolName').innerHTML = schoolName;
+
+    nces = data.getValue(0,1);
+    document.getElementById('nces').innerHTML = nces;
+    schoolType = data.getValue(0,2);
+    document.getElementById('schoolType').innerHTML = schoolType;
+    address = data.getValue(0,3);
+    document.getElementById('address').innerHTML = address;
+    city = data.getValue(0,4);
+    document.getElementById('city').innerHTML = city;
+    state = data.getValue(0,5);
+    document.getElementById('state').innerHTML = state;
+
+    zipCode = data.getValue(0,6);
+    document.getElementById('zipCode').innerHTML = zipCode;
+    charterSchool = data.getValue(0,7);
+    document.getElementById('charterSchool').innerHTML = charterSchool;
+    magnetSchool = data.getValue(0,8);
+    document.getElementById('magnetSchool').innerHTML = magnetSchool;
+    numTestTakers = data.getValue(0,9);
+    document.getElementById('numTestTakers').innerHTML = numTestTakers;
+    criticalReadingMean = data.getValue(0,10);
+    document.getElementById('criticalReadingMean').innerHTML = criticalReadingMean;
+    mathematicsMean = data.getValue(0,11);
+    document.getElementById('mathematicsMean').innerHTML = mathematicsMean;
+    writingMean = data.getValue(0,12);
+    document.getElementById('writingMean').innerHTML = writingMean;
+    apTestTakers = data.getValue(0,13);
+    document.getElementById('apTestTakers').innerHTML = apTestTakers;
+    totalApExams = data.getValue(0,14);
+    document.getElementById('totalApExams').innerHTML = totalApExams;
+    numAp3Higher = data.getValue(0,15);
+    document.getElementById('numAp3Higher').innerHTML = numAp3Higher;
+    totalStudents = data.getValue(0,16);
+    document.getElementById('totalStudents').innerHTML = totalStudents;
+    totalMale = data.getValue(0,17);
+    document.getElementById('totalMale').innerHTML = totalMale;
+    percentMale = data.getValue(0,18);
+    document.getElementById('percentMale').innerHTML = percentMale;
+    totalFemale = data.getValue(0,19);
+    document.getElementById('totalFemale').innerHTML = totalFemale;
+    percentFemale = data.getValue(0,20);
+    document.getElementById('percentFemale').innerHTML = percentFemale;
+    totalAmericanIndian = data.getValue(0,21);
+    document.getElementById('totalAmericanIndian').innerHTML = totalAmericanIndian;
+    percentAmericanIndian = data.getValue(0,22);
+    document.getElementById('percentAmericanIndian').innerHTML = percentAmericanIndian;
+    totalAsians = data.getValue(0,23);
+    document.getElementById('totalAsians').innerHTML = totalAsians;
+    percentAsians = data.getValue(0,24);
+    document.getElementById('percentAsians').innerHTML = percentAsians;
+    totalBlack = data.getValue(0,25);
+    document.getElementById('totalBlack').innerHTML = totalBlack;
+    percentBlack = data.getValue(0,26);
+    document.getElementById('percentBlack').innerHTML = percentBlack;
+    totalHispanic = data.getValue(0,27);
+    document.getElementById('totalHispanic').innerHTML = totalHispanic;
+    percentHispanic = data.getValue(0,28);
+    document.getElementById('percentHispanic').innerHTML = percentHispanic;
+    totalWhite = data.getValue(0,29);
+    document.getElementById('totalWhite').innerHTML = totalWhite;
+    percentWhite = data.getValue(0,30);
+    document.getElementById('percentWhite').innerHTML = percentWhite;
+    studentFaculty = data.getValue(0,31);
+    document.getElementById('studentFaculty').innerHTML = studentFaculty;
+    totalTeachers = data.getValue(0,32);
+    document.getElementById('totalTeachers').innerHTML = totalTeachers;
+
+    var table = new google.visualization.Table(document.getElementById('querytable'));
+    table.draw(data, null);
+  }
+
+  </script>
+</head>
+<body style="font-family: Arial;border: 0 none;">
+ <div id="header">
+  <h1>SATStat NYC </h1>
+  <div id="headerbackground"></div>
 </div>
+<div id="visualizations">
+	<div id="menu">	
+   <a href='/about' class="classname"> About </a>
+   <a href='/' class="classname"> Charts</a>
+   <a href='/regions' class="classname"> Schools</a>
+ </div>
+
+ <h2 id="schoolName"></h2>
+ <div id="general">
+   <h3>General Info</h3>
+   <p>NCES ID: <span id='nces'></span></p>
+   <p>School Type: <span id='schoolType'></span></p>
+   <p>Charter School: <span id='charterSchool'></span></p>
+   <p>Magnet School: <span id='magnetSchool'></span></p>
+
+   <h3>Address</h3>
+   <p><div id='address'></div>
+     <span id='city'></span>, <span id='state'></span> <span id='zipCode'></span></p>
+
+     <div id="map"><img src="http://maps.googleapis.com/maps/api/staticmap?center={{ result["latitude"] }},{{ result["longitude"] }}&zoom=13&size=600x300&maptype=roadmap
+&markers=color:blue%7Clabel:S%7C{{ result["latitude"] }},{{ result["longitude"] }}&sensor=false"/></div>
+   </div>
+   <div id="attribute">
+   <h3>SAT Statistics</h3>
+   <p>Number of Test Takers: <span id='numTestTakers'></span></p>
+   <p>Math Mean: <span id='mathematicsMean'></span></p>
+   <p>Critical Reading Mean: <span id='criticalReadingMean'></span></p>
+   <p>Writing Mean: <span id='writingMean'></span></p>
+
+   <h3>AP Statistics</h3>
+   <p>Total Number of Test Takers: <span id='apTestTakers'></span></p>
+   <p>Total AP Exams Taken: <span id='totalApExams'></span></p>
+   <p>Number of Exams 3 or Higher: <span id='numAp3Higher'></span></p>
+</div>
+<div id="demographic">
+   <h3>Demographic Information</h3>
+   <p>Total Students: <span id='totalStudents'></span></p>
+   <p>Total Male Students: <span id='totalMale'></span></p>
+   <p>Percent Male Students: <span id='percentMale'></span></p>
+   <p>Total Female Students: <span id='totalFemale'></span></p>
+   <p>Percent Female Students: <span id='percentFemale'></span></p>
+   <p>Total American Indian Students: <span id='totalAmericanIndian'></span></p>
+   <p>Percent American Indian Students: <span id='percentAmericanIndian'></span></p>
+   <p>Total Asian Students: <span id='totalAsians'></span></p>
+   <p>Percent Asian Students: <span id='percentAsians'></span></p>
+   <p>Total Black Students: <span id='totalBlack'></span></p>
+   <p>Percent Black Students: <span id='percentBlack'></span></p>
+   <p>Total Hispanic Students: <span id='totalHispanic'></span></p>
+   <p>Percent Hispanic Students: <span id='percentHispanic'></span></p>
+   <p>Total White Students: <span id='totalWhite'></span></p>
+   <p>Percent White Students: <span id='percentWhite'></span></p>
+   <p>Student Faculty Ratio: <span id='studentFaculty'></span></p>
+   <p>Total Full Time Teachers: <span id='totalTeachers'></span></p>
+</div>
+
+ </div>
 </body>
 </html>
-    
+

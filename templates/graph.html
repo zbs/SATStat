@@ -57,9 +57,7 @@
       	
       	nameX = "Total Students";
       	nameY = "Mathematics Mean";
-      	options_chart['title'] = nameX + ' vs. ' + nameY + ' Comparison';
-      	options_chart['hAxis'] = {title: 'Age', minValue: 0, maxValue: 15};
-      	options_chart['vAxis'] = {title: 'Weight', minValue: 0, maxValue: 15};
+      	options_chart['title'] = nameY + ' vs. ' + nameX + ' Comparison';
       	options_chart['legend'] = 'none';
       	
         
@@ -155,7 +153,7 @@
 <div id="filter" ">
 <span id="configure"> Configure</span>
  <form action="">
-    <p><label>Select SAT Section:</label>
+    <p><label>Select SAT Section (Y-Axis): </label>
     <select id='query-1' onchange='setSATSection(this.value, this.options[this.selectedIndex].innerHTML)'>
       <option value='13'>Critical Reading</option>
       <option value='14'>Math</option>
@@ -163,7 +161,7 @@
     </select></p>
   
     
-    <p><label>Select Comparison Metric:</label>
+    <p><label>Select Metric (X-Axis): </label>
     <select id='query-1' onchange='setMetric(this.value, this.options[this.selectedIndex].innerHTML)'>
       <option value='19'>Total Students</option>
       <option value='20'>Total Male Students</option>
@@ -184,7 +182,7 @@
       <option value='35'>Total Full Time Teachers</option>
     </select></p>
     
-    <p><label>Select Region:</label>
+    <p><label>Filter by Region:</label>
     <select id='query-1' onchange='setRegion(this.value)'>
     	<option value='ALL REGIONS'>All Regions</options>
     	<option value='BAYSIDE'>Bayside</option>
