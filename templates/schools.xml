@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schools>
+    {% for school in results["schools"] %}
+    <school>
+      {% if 'uri' in school %}
+        <uri>{{ school['uri'] }}</uri>
+      {% end %}
+      {% if 'name' in school%}
+        <name>{{ xhtml_escape(school['name']) }}</name>
+      {% end %}
+    </school>
+    {% end %}
+</schools>

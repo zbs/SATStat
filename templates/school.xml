@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<school>
+  {% if 'totalasianstudents' in school %}         <totalasianstudents>{{ school['totalasianstudents'] }}</totalasianstudents>       {% end %}
+{% if 'criticalreadingmean' in school %}         <criticalreadingmean>{{ school['criticalreadingmean'] }}</criticalreadingmean>       {% end %}
+{% if 'schooltype' in school %}         <schooltype>{{ school['schooltype'] }}</schooltype>       {% end %}
+{% if 'dbn' in school %}         <dbn>{{ school['dbn'] }}</dbn>       {% end %}
+{% if 'numberofapexamswithscores34or5' in school %}         <numberofapexamswithscores34or5>{{ school['numberofapexamswithscores34or5'] }}</numberofapexamswithscores34or5>       {% end %}
+{% if 'totalfulltimeteachers' in school %}         <totalfulltimeteachers>{{ school['totalfulltimeteachers'] }}</totalfulltimeteachers>       {% end %}
+{% if 'totalstudents' in school %}         <totalstudents>{{ school['totalstudents'] }}</totalstudents>       {% end %}
+{% if 'nces' in school %}         <nces>{{ school['nces'] }}</nces>       {% end %}
+{% if 'americanindianalaskannativestudents' in school %}         <americanindianalaskannativestudents>{{ school['americanindianalaskannativestudents'] }}</americanindianalaskannativestudents>       {% end %}
+{% if 'numberoftesttakers' in school %}         <numberoftesttakers>{{ school['numberoftesttakers'] }}</numberoftesttakers>       {% end %}
+{% if 'longitude' in school %}         <longitude>{{ school['longitude'] }}</longitude>       {% end %}
+{% if 'address' in school %}         <address>{{ school['address'] }}</address>       {% end %}
+{% if 'charterschool' in school %}         <charterschool>{{ school['charterschool'] }}</charterschool>       {% end %}
+{% if 'studentfacultyratio' in school %}         <studentfacultyratio>{{ school['studentfacultyratio'] }}</studentfacultyratio>       {% end %}
+{% if 'totalfemalestudents' in school %}         <totalfemalestudents>{{ school['totalfemalestudents'] }}</totalfemalestudents>       {% end %}
+{% if 'totalapexamstaken' in school %}         <totalapexamstaken>{{ school['totalapexamstaken'] }}</totalapexamstaken>       {% end %}
+{% if 'city' in school %}         <city>{{ school['city'] }}</city>       {% end %}
+{% if 'totalmalestudents' in school %}         <totalmalestudents>{{ school['totalmalestudents'] }}</totalmalestudents>       {% end %}
+{% if 'whitestudents' in school %}         <whitestudents>{{ school['whitestudents'] }}</whitestudents>       {% end %}
+{% if 'schoolname' in school %}         <schoolname>{{ school['schoolname'] }}</schoolname>       {% end %}
+{% if 'writingmean' in school %}         <writingmean>{{ school['writingmean'] }}</writingmean>       {% end %}
+{% if 'hispanicstudents' in school %}         <hispanicstudents>{{ school['hispanicstudents'] }}</hispanicstudents>       {% end %}
+{% if 'malestudents' in school %}         <malestudents>{{ school['malestudents'] }}</malestudents>       {% end %}
+{% if 'blackstudents' in school %}         <blackstudents>{{ school['blackstudents'] }}</blackstudents>       {% end %}
+{% if 'zipcode' in school %}         <zipcode>{{ school['zipcode'] }}</zipcode>       {% end %}
+{% if 'magnetschool' in school %}         <magnetschool>{{ school['magnetschool'] }}</magnetschool>       {% end %}
+{% if 'aptesttakers' in school %}         <aptesttakers>{{ school['aptesttakers'] }}</aptesttakers>       {% end %}
+{% if 'totalblackstudents' in school %}         <totalblackstudents>{{ school['totalblackstudents'] }}</totalblackstudents>       {% end %}
+{% if 'state' in school %}         <state>{{ school['state'] }}</state>       {% end %}
+{% if 'mathematicsmean' in school %}         <mathematicsmean>{{ school['mathematicsmean'] }}</mathematicsmean>       {% end %}
+{% if 'latitude' in school %}         <latitude>{{ school['latitude'] }}</latitude>       {% end %}
+{% if 'totalhispanicstudents' in school %}         <totalhispanicstudents>{{ school['totalhispanicstudents'] }}</totalhispanicstudents>       {% end %}
+{% if 'totalamericanindianalaskannativestudents' in school %}         <totalamericanindianalaskannativestudents>{{ school['totalamericanindianalaskannativestudents'] }}</totalamericanindianalaskannativestudents>       {% end %}
+{% if 'asianstudents' in school %}         <asianstudents>{{ school['asianstudents'] }}</asianstudents>       {% end %}
+{% if 'femalestudents' in school %}         <femalestudents>{{ school['femalestudents'] }}</femalestudents>       {% end %}
+{% if 'totalwhitestudents' in school %}         <totalwhitestudents>{{ school['totalwhitestudents'] }}</totalwhitestudents>       {% end %}
+</school>

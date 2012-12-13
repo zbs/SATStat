@@ -15,6 +15,12 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 
+from gdata.spreadsheet.service import SpreadsheetsService
+import gdata.spreadsheet.text_db
+import gdata.docs
+import gdata.docs.service
+import gdata.spreadsheet.service
+
 from tornado.options import define, options
 from tornado.web import RequestHandler
 
@@ -25,14 +31,17 @@ define("mappings", default="data/movie_actors.csv", help="key mapping file")
 
 ### School Web Service implementation ###
 
-type_to_extension = {"application/xml" : "xml", "application/rdf+xml": "rdf", 
-                     "text/turtle": "ttl", "text/html" : "html", "application/json" : "json"}
+type_to_extension = {"application/xml" : "xml", "text/html" : "html", \
+                     "application/json" : "json"}
 
 def respond_to_header(handler, redirect_uri, support_html=False):
     accept_format = handler.request.headers["Accept"]
     if not accept_format or accept_format == '*/*':
         accept_format = 'application/json'
-    if accept_format not in type_to_extension:
+        
+    if 'text/html' in accept_format:
+        handler.redirect(redirect_uri+".html", status=303)
+    elif accept_format not in type_to_extension:
         handler.write_error(401, message="Content type %s not supported"%accept_format)
     elif accept_format == 'text/html' and not support_html:
         handler.write_error(401, message="HTML not supported for this use case")
@@ -42,7 +51,7 @@ def respond_to_header(handler, redirect_uri, support_html=False):
 
 class SchoolService(tornado.web.Application):
     """The School Service Web Application"""
-    def __init__(self):
+    def __init__(self, db):
         handlers = [
             (r"/", HomeHandler),
             (r"/Schools(\..+)?", SchoolListHandler),
@@ -56,7 +65,7 @@ class SchoolService(tornado.web.Application):
             autoescape=None,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
-#        self.db = db
+        self.db = db
         
 class BaseHandler(tornado.web.RequestHandler):
     """Functions common to all handlers"""
@@ -78,7 +87,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        self.write("<html><body><h1>INFO/CS 4302 Homework 6</h1></body></html>")
+        self.render("graph.html")
 
 class SchoolListHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET", "POST")
@@ -88,7 +97,7 @@ class SchoolListHandler(BaseHandler):
             respond_to_header(self, "/Schools")
         elif format == ".xml":
             self.set_header("Content-Type", "application/xml")
-            self.render("School_list.xml", Schools=Schools)
+            self.render("Schools.xml", results=Schools)
         elif format == ".json":
             self.write(dict(Schools=Schools))
     
@@ -117,23 +126,19 @@ class SchoolResourceHandler(BaseHandler):
     SUPPORTED_METHODS = ("PUT", "GET", "DELETE")
 
     def get(self, School_id, format):
-        School_resource = self.db.get_School(School_id, self.base_uri)
+        school_resource = self.db.get_School(School_id, self.base_uri)
         if format is None:
             respond_to_header(self, "/Schools/%s"%School_id, True)
         elif format == ".html":
-            self.set_header("Content-Type", "text/html")
-            self.render("School.html", School=School_resource)
+#            not implemented yet
+#            self.set_header("Content-Type", "text/html")
+#            self.render("School.html", School=school_resource)
+            pass
         elif format == ".xml":
             self.set_header("Content-Type", "application/xml")
-            self.render("School.xml", School=School_resource)
-        elif format == ".rdf":
-            self.set_header("Content-Type", "application/rdf+xml")
-            self.render("School.rdf", School=School_resource)
-        elif format == ".ttl":
-            self.set_header("Content-Type", "text/turtle")
-            self.render("School.ttl", School=School_resource)
+            self.render("school.xml", school=school_resource)
         elif format == ".json":
-            self.write(School_resource) # Tornado handles JSON automatically
+            self.write(school_resource) # Tornado handles JSON automatically
 
     def put(self, School_id, format):
         if School_id in self.db.Schools:
@@ -164,158 +169,74 @@ class QueryHandler(BaseHandler):
 
 class SchoolDatabase(object):
     """A dummy in-memory database for handling School data."""
-    def __init__(self, Schools_csv, actors_csv, mapping_csv):
-        print "Loading data into memory...."
-        mapping_data = self.read_from_csv(mapping_csv)
-        School_data = self.read_from_csv(Schools_csv)
-        actor_data = self.read_from_csv(actors_csv)
-        self.Schools = {}
-        for School in School_data:
-            self.Schools[School['id']] = School
-            actors = [actor['actor_id'] for actor in mapping_data
-                            if actor['School_id'] == School['id']]
-            self.Schools[School['id']]['actors'] = actors
-        self.actors = {}
-        for actor in actor_data:
-            self.actors[actor['id']] = actor
-            Schools = [School['School_id'] for School in mapping_data
-                            if School['actor_id'] == actor['id']]
-            self.actors[actor['id']]['Schools'] = Schools
+    def __init__(self):
         
-    # Simple regex search over all entities
+        self.key = '0AqApqrIj0J-EdFRmV0RHQUFydk9mSzFMQ1hpNGE3aHc'
+        self.client = SpreadsheetsService()
+        
     
-    def find(self, query_string, base_uri):
-        """Find entities matching a given query string"""
-        results = []
-        for actor in self.actors.values():
-            if actor.has_key('name'):
-               if re.search(query_string, actor['name'],
-                            re.IGNORECASE) is not None:
-                   print "found query string in actor name"
-                   results.append(dict(type="actor",
-                                 uri=base_uri + "/actors/" + actor['id']))
-        for School in self.Schools.values():
-            match = False
-            if School.has_key('title'):
-                if re.search(query_string, School['title'],
-                   re.IGNORECASE) is not None:
-                    match = True
-            if School.has_key('synopsis'):
-                if re.search(query_string, School['synopsis'],
-                   re.IGNORECASE) is not None:
-                    match = True
-            if match:
-                results.append(dict(type="School",
-                              uri=base_uri + "/Schools/" + School['id']))                
-        print "Found %d results for query %s" % (len(results), query_string)
-        return results
+    def search(self, query):
+        #        results = []
+#        for actor in self.actors.values():
+#            if actor.has_key('name'):
+#               if re.search(query_string, actor['name'],
+#                            re.IGNORECASE) is not None:
+#                   print "found query string in actor name"
+#                   results.append(dict(type="actor",
+#                                 uri=base_uri + "/actors/" + actor['id']))
+#        for School in self.Schools.values():
+#            match = False
+#            if School.has_key('title'):
+#                if re.search(query_string, School['title'],
+#                   re.IGNORECASE) is not None:
+#                    match = True
+#            if School.has_key('synopsis'):
+#                if re.search(query_string, School['synopsis'],
+#                   re.IGNORECASE) is not None:
+#                    match = True
+#            if match:
+#                results.append(dict(type="School",
+#                              uri=base_uri + "/Schools/" + School['id']))                
+#        print "Found %d results for query %s" % (len(results), query_string)
+        pass
     
-    # ACTOR CRUD operations
-    
-    def get_actor(self, actor_id, base_uri):
-        """Returns data about an actor with IDs converted to URIs"""
-        actor = self.actors[actor_id]
-        actor_resource = {}
-        actor_resource['uri'] = base_uri + "/actors/" + actor_id
-        if actor.has_key('name'):
-            actor_resource['name'] = actor['name']
-        if actor.has_key('birth_date'):
-            actor_resource['birth_date'] = actor['birth_date']
-        if actor.has_key('Schools'):
-            actor_resource['Schools'] = [(base_uri + "/Schools/" + School_id)
-                                        for School_id in actor['Schools']] 
-        return actor_resource
-
-    def list_actors(self, base_uri, School_id = None):
-        """Returns a list of actors with IDs converted to URIs"""
-        if School_id is None:
-            actors = self.actors.values()
+    def find(self, query=None, base_uri=None):
+        
+        if not query:
+            feed = self.client.GetListFeed(self.key, visibility='public', projection='values')
         else:
-            actors = [actor for actor in self.actors.values()
-                            if School_id in actor['Schools']]
-        actor_list = []
-        for actor in actors:
-            entry = {}
-            entry['uri'] = base_uri + "/actors/" + actor['id']
-            if actor.has_key('name'):
-                entry['name'] = actor['name']
-            actor_list.append(entry)
-        return actor_list
-    
+            feed = self.client.GetListFeed(self.key, query=query, visibility='public', projection='values')
+
+        results = []
+        for row_entry in feed.entry:
+            results.append(gdata.spreadsheet.text_db.Record(row_entry=row_entry).content)
+            
+        return results
+
     # School CRUD operations
-    def get_School(self, School_id, base_uri):
-        """Returns data about a School with IDs converted to URIs"""
-        School = self.Schools[School_id]
-        School_resource = {}
-        School_resource['uri'] = base_uri + "/Schools/" + School_id
-        if School.has_key('title'):
-            School_resource['title'] = School['title']
-        if School.has_key('synopsis'):
-            School_resource['synopsis'] = School['synopsis']
-        if School.has_key('actors'):
-            School_resource['actors'] = [(base_uri + "/actors/" + actor_id)
-                                        for actor_id in School['actors']] 
-        return School_resource
+    def get_School(self, School_id, base_uri=None):
+        query = gdata.spreadsheet.service.ListQuery()
+        query.sq = "nces = %s"%School_id
+        return self.find(query=query)[0]
 
     def list_Schools(self, base_uri):
-        """Returns a list of Schools with IDs converted to URIs"""
-        School_list = []
-        for School in self.Schools.values():
-            entry = {}
-            entry['uri'] = base_uri + "/Schools/" + School['id']
-            if School.has_key('title'):
-                entry['title'] = School['title']
-            School_list.append(entry)
-        return School_list
-
-    def create_School(self, School):
-        """Creates a new School and returns the assigned ID"""
-        max_id = sorted([int(School_id) for School_id in self.Schools])[-1]
-        new_id = str(max_id + 1)
-        self.Schools[new_id] = School
-        return new_id
-
-    def update_School(self, School_id, School):
-        """Updates a School with a given id"""
-        self.Schools[School_id] = School
-    
-    def delete_School(self, School_id):
-        """Deletes a School and references to this School"""
-        del self.Schools[School_id]
-        for actor in self.actors.values():
-            if School_id in actor['Schools']:
-                print "Deleting School reference from actor %s" % actor['id']
-                actor['Schools'].remove(School_id)
-    
-    # Data import
-    
-    def read_from_csv(self, csv_file):
-        """Reads CSV entries into a list containing a set of dictionaries.
-        CSV header row entries are taken as dictionary keys"""
-        data = []
-        with codecs.open(csv_file, 'r', encoding='utf-8') as csvfile:
-            header = None
-            for i, line in enumerate(csvfile):
-                line_split = [x.strip() for x in line.split("|")]
-                line_data = [x for x in line_split if len(x) > 0]
-                if i == 0:
-                    header = line_data
-                else:
-                    entry = {}
-                    for i,datum in enumerate(line_data):
-                        entry[header[i]] = datum
-                    data.append(entry)
-        print "Loaded %d entries from %s" % (len(data), csv_file)
-        return data
+        schools = self.find()
+        
+        def get_school_item(row):
+            name = row['schoolname']
+            nces_id = row['nces']
+            uri = base_uri + "/Schools/%s"%nces_id
+            return {'name': name, 'uri': uri}
                     
+        return {'schools': [get_school_item(row) for row in schools]}
 ### Script entry point ###
 
 def main():
     tornado.options.parse_command_line()
     # Set up the database
-#    db = SchoolDatabase(options.Schools, options.actors, options.mappings)
+    db = SchoolDatabase()
     # Set up the Web application, pass the database
-    School_webservice = SchoolService()
+    School_webservice = SchoolService(db)
     # Set up HTTP server, pass Web application
     try:
         http_server = tornado.httpserver.HTTPServer(School_webservice)
