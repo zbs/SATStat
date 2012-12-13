@@ -84,13 +84,14 @@ td {
 	width: 400px;
 	padding-top: 15px;
 	padding-bottom: 10px;
-	padding-left: 45px;
+	padding-left: 0px;
 	padding-right: 10px;
 	text-align: left;
 	color: rgb(68,68,68);
 	float:left;
 	height:750px;
 	display: inline-block;
+	overflow:hidden;
 }
 #banner{
 	
@@ -110,10 +111,16 @@ td {
 	text-align: center;
 	width:960px;
 }
+#querytable{
+	text-align: center;
+	width:700px;
+	margin-left: 25%;
+}
 #map{
 	background-color: rgb(168,198,254);
-	width: 400px;
-	float:left;
+	width: 300px;
+	
+	
 }
 #header{
 	background-color: rgb(255,255,255);
