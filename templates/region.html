@@ -13,7 +13,7 @@
     <script type="text/javascript">
     var query = new google.visualization.Query('https://docs.google.com/spreadsheet/pub?key=0AqApqrIj0J-EdFRmV0RHQUFydk9mSzFMQ1hpNGE3aHc&output=html');
     
-	query.setQuery("select B where F='BAYSIDE'");
+	query.setQuery("select B where F='{{ result["name"] }}'");
 	query.send(handleQueryResponse);
 	
 	function handleQueryResponse(response) {

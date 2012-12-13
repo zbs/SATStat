@@ -26,7 +26,7 @@ from tornado.options import define, options
 from tornado.web import RequestHandler
 
 define("port", default=8888, help="run on the given port", type=int)
-define("Schools", default="data/movies.csv", help="Schools data file")
+define("schools", default="data/movies.csv", help="Schools data file")
 define("actors", default="data/actors.csv", help="actors data file")
 define("mappings", default="data/movie_actors.csv", help="key mapping file")
 
@@ -63,9 +63,10 @@ class SchoolService(tornado.web.Application):
         handlers = [
             (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': static_path}),
             (r"/", HomeHandler),
-            (r"/Schools(\..+)?", SchoolListHandler),
+            (r"/schools(\..+)?", SchoolListHandler),
+            (r"/regions/(\w+)(\..+)?", RegionHandler),
             (r"/regions(\..+)?", BrowseHandler),
-            (r"/Schools/(\d+)(\..+)?", SchoolResourceHandler),
+            (r"/schools/(\d+)(\..+)?", SchoolResourceHandler),
             (r"/maps?", MapHandler),
             (r"/about", AboutHandler),
             (r"/search(\..+)?", QueryHandler)
@@ -91,8 +92,12 @@ class BaseHandler(tornado.web.RequestHandler):
         """Attach human-readable msg to error messages"""
         self.finish("Error %d - %s" % (status_code, kwargs['message']))
 
+class RegionHandler(BaseHandler):
+    def get(self, region_name, format):
+            self.render("region.html", result={"name":region_name})
+
 class BrowseHandler(BaseHandler):
-    def get(self, region_name):
+    def get(self, format):
         self.render("regions.html")
         
 class AboutHandler(BaseHandler):
@@ -106,17 +111,22 @@ class HomeHandler(BaseHandler):
 class SchoolListHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET", "POST")
     def get(self, format):
-        Schools = self.db.list_Schools(self.base_uri)
         if format is None:
-            respond_to_header(self, "/Schools")
-        elif format == ".html":
+            respond_to_header(self, "/schools")
+            return 
+        
+        if format == ".html":
             self.set_header("Content-Type", "text/html")
-            self.render("schools.html", result=school_resource)
-        elif format == ".xml":
-            self.set_header("Content-Type", "application/xml")
-            self.render("Schools.xml", results=Schools)
-        elif format == ".json":
-            self.write(dict(Schools=Schools))
+            self.render("schools.html")
+        else:
+            Schools = self.db.list_Schools(self.base_uri)
+            if format == ".xml":
+                self.set_header("Content-Type", "application/xml")
+                self.render("Schools.xml", results=Schools)
+            elif format == ".json":
+                self.write(dict(Schools=Schools))
+            else:
+                self.write_error(401, message="Unsupported format")
     
     def post(self, format):
         new_School = json.loads(self.request.body)
