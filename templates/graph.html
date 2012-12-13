@@ -41,7 +41,7 @@
     
       function drawVisualization(data) {
         //selects portion of data table to display 
-        columnValueX = 35;
+        columnValueX = 19;
         columnValueY = 14;
         dataViewTable = new google.visualization.DataView(data);
         dataViewTable.setColumns([1, columnValueX, columnValueY]);
@@ -55,7 +55,7 @@
       	options_table['sortColumn'] = 1;
       	options_table['sortAscending'] = false;
       	
-      	nameX = "Total Full Time Teachers";
+      	nameX = "Total Students";
       	nameY = "Mathematics Mean";
       	options_chart['title'] = nameX + ' vs. ' + nameY + ' Comparison';
       	options_chart['hAxis'] = {title: 'Age', minValue: 0, maxValue: 15};
@@ -109,6 +109,31 @@
       draw();
       }
     }
+     
+      function setRegion(city){
+      	if(city != 'ALL REGIONS'){
+      		query.setQuery("select * where F = '" + city +"'");
+      		query.send(handleQueryResponseRegion);
+      	}else{
+      		query.setQuery("select *");
+      		query.send(handleQueryResponseRegion);
+      	}
+      }
+      
+     
+	
+	function handleQueryResponseRegion(response) {
+      if (response.isError()) {
+        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+        return;
+      }
+      	var dataRegion = response.getDataTable();
+      	dataViewChart = new google.visualization.DataView(dataRegion);
+      	dataViewChart.setColumns([columnValueX, columnValueY]);
+      	dataViewTable = new google.visualization.DataView(dataRegion);
+      	dataViewTable.setColumns([1, columnValueX, columnValueY]);
+      	draw();
+    }
     
     
     </script>
@@ -132,7 +157,6 @@
  <form action="">
     <p><label>Select SAT Section:</label>
     <select id='query-1' onchange='setSATSection(this.value, this.options[this.selectedIndex].innerHTML)'>
-      <option value='select'>--Select--</option>
       <option value='13'>Critical Reading</option>
       <option value='14'>Math</option>
       <option value='15'>Writing</option>
@@ -141,7 +165,6 @@
     
     <p><label>Select Comparison Metric:</label>
     <select id='query-1' onchange='setMetric(this.value, this.options[this.selectedIndex].innerHTML)'>
-      <option value='select'>--Select--</option>
       <option value='19'>Total Students</option>
       <option value='20'>Total Male Students</option>
       <option value='21'>% Male Students</option>
@@ -161,6 +184,33 @@
       <option value='35'>Total Full Time Teachers</option>
     </select></p>
     
+    <p><label>Select Region:</label>
+    <select id='query-1' onchange='setRegion(this.value)'>
+    	<option value='ALL REGIONS'>All Regions</options>
+    	<option value='BAYSIDE'>Bayside</option>
+   		<option value='BELLMORE'>Bellmore</option>
+   		<option value='BRONX'>Bronx</option>
+   		<option value='BROOKLYN'>Brooklyn</option>
+   		<option value='CAMBRIA HEIGHTS'>Cambria Heights</option>
+   		<option value='CORONA'>Corona</option>
+   		<option value='CROSS RIVER'>Cross River</option>
+   		<option value='ELMHURST'>Elmhurst</option>
+   		<option value='FAR ROCKAWAY'>Far Rockaway</option>
+   		<option value='FLUSHING'>Flushing</option>
+   		<option value='FOREST HILLS'>Forest Hills</option>
+   		<option value ='FRESH MEADOWS'>Fresh Meadows</option>
+   		<option value='JAMAICA'>Jamaica</option>
+		<option value='LONG ISLAND CITY'>Long Island City</option>
+   		<option value='MANHATTAN'>Manhattan</option>
+   		<option value='NEW YORK'>New York</option>
+   		<option value='OZONE PARK'>Ozone Park</option>
+   		<option value='QUEENS VILLAGE'>Queens Village</option>
+   		<option value='RICHMOND'>Richmond Hill</option>
+   		<option value='ROCKAWAY PARK'>Rockaway Park</option>
+   		<option value='SAINT ALBANS'>Saint Albans</option>
+		<option value='SPRINGFIELD GARDEN'>Springfield Gardens</option>
+   		<option value='STATEN ISLAND'>Staten Island</option>
+    </select></p>
     <p><a href="#table">View Data as Table</a></p>
 
 </form>
