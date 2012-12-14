@@ -13,7 +13,7 @@
     <script type="text/javascript">
     var query = new google.visualization.Query('https://docs.google.com/spreadsheet/pub?key=0AqApqrIj0J-EdFRmV0RHQUFydk9mSzFMQ1hpNGE3aHc&output=html');
     
-	query.setQuery("select B where F='{{ result["name"] }}'");
+	query.setQuery("select B, C where F='{{ result["name"] }}'");
 	query.send(handleQueryResponse);
 	
 	function handleQueryResponse(response) {
@@ -22,11 +22,20 @@
         return;
       }
       data = response.getDataTable();
-      var table = new google.visualization.Table(document.getElementById('querytable'));
-      table.draw(data, null);
+      
+      var table = new google.visualization.Table(document.getElementById('queryTable'));
+      
+      var formatTable = new google.visualization.PatternFormat('<a id=\"schoolLink\" href="/schools/{1}">{0}</a>');
+      formatTable.format(data, [0, 1]);
+      var view = new google.visualization.DataView(data);
+  	  view.setColumns([0]); // Create a view with the first column only.
+  
+      table.draw(view, {allowHtml: true, showRowNumber: true});
+      
+      
     }
     
-      google.setOnLoadCallback(sendAndDraw);
+      //google.setOnLoadCallback(sendAndDraw);
 	</script>
   </head>
   <body style="font-family: Arial;border: 0 none;">
@@ -41,4 +50,4 @@
 			<a href='/regions' class="classname"> Schools</a>
 		</div>
 	<h2 style="font-size:34px;text-align:center;">School Data</h2>
-    <div id="querytable"></div>
+    <div id="queryTable"></div>
