@@ -114,7 +114,7 @@ td {
 #querytable{
 	text-align: center;
 	width:700px;
-	margin-left: 25%;
+	margin-left: 22%;
 }
 #map{
 	background-color: rgb(168,198,254);
@@ -226,6 +226,15 @@ label{
  	padding-top: 50px;
  	padding-bottom: 10px;
 
+}
+
+#schoolLink{
+	color: rgb(76, 137, 233);
+	font-family: "calibri", serif, Times;
+}
+
+#schoolsList{
+	text-align: center;
 }
 .whiteP{
 	color:rgb(68,68,68);
