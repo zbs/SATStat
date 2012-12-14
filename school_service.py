@@ -26,9 +26,6 @@ from tornado.options import define, options
 from tornado.web import RequestHandler
 
 define("port", default=8888, help="run on the given port", type=int)
-define("schools", default="data/movies.csv", help="Schools data file")
-define("actors", default="data/actors.csv", help="actors data file")
-define("mappings", default="data/movie_actors.csv", help="key mapping file")
 
 ### School Web Service implementation ###
 
@@ -67,9 +64,9 @@ class SchoolService(tornado.web.Application):
             (r"/regions/(\w+)(\..+)?", RegionHandler),
             (r"/regions(\..+)?", BrowseHandler),
             (r"/schools/(\d+)(\..+)?", SchoolResourceHandler),
-            (r"/maps?", MapHandler),
             (r"/about", AboutHandler),
-            (r"/search(\..+)?", QueryHandler)
+            (r"/search(\..+)?", QueryHandler),
+            (r".*", PageNotFoundHandler),
         ]
         
         tornado.web.Application.__init__(self, handlers, **settings)
@@ -92,22 +89,22 @@ class BaseHandler(tornado.web.RequestHandler):
         """Attach human-readable msg to error messages"""
         self.finish("Error %d - %s" % (status_code, kwargs['message']))
 
+class PageNotFoundHandler(BaseHandler):
+    def get(self):
+        self.write("<h1>Page not found</h1>")
+
 class RegionHandler(BaseHandler):
     def get(self, region_name, format):
         if format is None:
             respond_to_header(self, "/regions/%s"%region_name, True)
-            
+            return 
+        
         region_name = region_name.replace("_", " ")
         if format == ".html":
             self.set_header("Content-Type", "text/html")
             self.render("region.html", result={"name":region_name})
         else:
-            region_resource = self.db.get_region(region_name, self.base_uri)
-            if format == ".xml":
-                self.set_header("Content-Type", "application/xml")
-                self.render("region.xml", region=region_resource)
-            elif format == ".json":
-                self.write(region_resource) # Tornado handles JSON automatically
+            self.write_error(401, message="Format %s is not supported"%format)
             
 class BrowseHandler(BaseHandler):
     def get(self, format):
@@ -145,27 +142,8 @@ class SchoolListHandler(BaseHandler):
         new_School = json.loads(self.request.body)
         new_School_id = self.db.create_School(new_School[1])
         self.set_status(201)
-        self.set_header("Location", self.base_uri + "/Schools/" + new_School_id)
-
-class MapHandler(BaseHandler):
-    SUPPORTED_METHODS = ("POST")
-    
-    def get(self, School_id, format):
-        self.set_header("Content-Type", "text/html")
-        self.render("map.html")
-    
-    def post(self   ):
-        print str(urllib.unquote(self.request.body))
-        print str(self.request.body)
+        self.set_header("Location", self.base_uri + "/schools/" + new_School_id)
         
-        location_list = json.loads(urllib.unquote(self.request.body))["locations"]
-        center = {"latitude": sum([x["latitude"] for x in location_list])/ float(len(location_list)), 
-                  "longitude": sum([x["longitude"] for x in location_list])/ float(len(location_list))}
-        location_data = {"center": center, "locations": location_list}
-        self.set_header("Content-Type", "text/html")
-        print "BEFORE"
-        self.render("map.html", location_data=location_data)
-        print "COMPLETED"
 class SchoolResourceHandler(BaseHandler):
     SUPPORTED_METHODS = ("GET")
 
@@ -181,6 +159,8 @@ class SchoolResourceHandler(BaseHandler):
             self.render("school.xml", school=school_resource)
         elif format == ".json":
             self.write(school_resource) # Tornado handles JSON automatically
+        else:
+            self.write_error(401, message="Format %s is not supported"%format)
 
 class QueryHandler(BaseHandler):
     
@@ -245,7 +225,42 @@ class SchoolDatabase(object):
         return results
 
     def get_region(self, region_name, base_uri):
-        pass
+        query = gdata.spreadsheet.service.ListQuery()
+        query.sq = "city = '%s'"%region_name
+        
+        schools = self.find(query=query)
+        
+        if not schools:
+            return None
+        
+        def get_school_item(row):
+            name = row['schoolname']
+            nces_id = row['nces']
+            uri = base_uri + "/schools/%s"%nces_id
+            return {'name': name, 'uri': uri}
+        
+        entries = map(get_school_item, schools)
+        not_numerical_keys = {'dbn', 'schoolname', 'nces', 'schooltype', 'address', \
+                              'city', 'state', 'zipcode', 'latitude', 'longitude', \
+                              'charterschool', 'magnetschool'}
+        valid_keys = (set(schools[0].keys()) - not_numerical_keys)
+        averages = {key:0 for key in valid_keys}
+        
+        def get_number(s):
+            try:
+                f = float(s)
+                return f
+            except ValueError:
+                return 0.
+        
+        for key in valid_keys:
+            averages[key] = sum([get_number(entry[key]) for entry in schools])
+            
+        averages = {'average%s'%key: averages[key] for key in averages}
+        averages["schools"] = entries
+        return averages
+        
+            
     
     # School CRUD operations
     def get_School(self, School_id, base_uri=None):
@@ -259,7 +274,7 @@ class SchoolDatabase(object):
         def get_school_item(row):
             name = row['schoolname']
             nces_id = row['nces']
-            uri = base_uri + "/Schools/%s"%nces_id
+            uri = base_uri + "/schools/%s"%nces_id
             return {'name': name, 'uri': uri}
                     
         return {'schools': [get_school_item(row) for row in schools]}
